@@ -1,4 +1,5 @@
 '''Generic Graph Classes'''
+from __future__ import absolute_import
 from StringIO import StringIO
 
 class Node(object):

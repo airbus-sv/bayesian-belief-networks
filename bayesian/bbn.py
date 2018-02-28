@@ -1,5 +1,10 @@
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+import six
+from six.moves import zip
 '''Data Structures to represent a BBN as a DAG.'''
+from __future__ import absolute_import
 import sys
 import copy
 import heapq
@@ -36,7 +41,7 @@ class BBN(Graph):
     '''A Directed Acyclic Graph'''
 
     def __init__(self, nodes_dict, name=None, domains={}):
-        self.nodes = nodes_dict.values()
+        self.nodes = list(nodes_dict.values())
         self.vars_to_nodes = nodes_dict
         self.domains = domains
         # For each node we want
@@ -116,7 +121,7 @@ class BBN(Graph):
                     normalizers[k[0][0]] += v
 
         if kwds:
-            for k, v in marginals.iteritems():
+            for k, v in six.iteritems(marginals):
                 if normalizers[k[0]] != 0:
                     marginals[k] /= normalizers[k[0]]
 
@@ -138,7 +143,7 @@ class BBN(Graph):
                              '%8.6f' % prob])
             else:
                 tab.add_row([node, value, '%8.6f' % prob])
-        print tab
+        print(tab)
 
     def draw_samples(self, query={}, n=1):
         '''query is a dict of currently evidenced
@@ -245,7 +250,7 @@ class JoinTree(UndirectedGraph):
         # values of the bbn truth-tables that are
         # assigned to the clusters...
 
-        for clique, bbn_nodes in assignments.iteritems():
+        for clique, bbn_nodes in six.iteritems(assignments):
 
             tt = dict()
             vals = []
@@ -280,7 +285,7 @@ class JoinTree(UndirectedGraph):
 
         # Step 2b: Set each liklihood element ^V(v) to 1
         likelihoods = self.initial_likelihoods(assignments, bbn)
-        for clique, bbn_nodes in assignments.iteritems():
+        for clique, bbn_nodes in six.iteritems(assignments):
             for node in bbn_nodes:
                 if node.variable_name in evidence:
                     for k, v in clique.potential_tt.items():
@@ -295,7 +300,7 @@ class JoinTree(UndirectedGraph):
         # TODO: Since this is the same every time we should probably
         # cache it.
         l = defaultdict(dict)
-        for clique, bbn_nodes in assignments.iteritems():
+        for clique, bbn_nodes in six.iteritems(assignments):
             for node in bbn_nodes:
                 for value in bbn.domains.get(
                         node.variable_name, [True, False]):
@@ -760,7 +765,7 @@ def build_bbn(*args, **kwds):
     # here can break build_bbn if the
     # factors do not correctly represent
     # a BBN.
-    original_factors = get_original_factors(factor_nodes.values())
+    original_factors = get_original_factors(list(factor_nodes.values()))
     for factor_node in factor_nodes.values():
         factor_args = get_args(factor_node)
         parents = [original_factors[arg] for arg in
@@ -843,7 +848,7 @@ def make_undirected_copy(dag):
             nodes[parent.name].neighbours.append(
                 nodes[node.name])
 
-    g = UndirectedGraph(nodes.values())
+    g = UndirectedGraph(list(nodes.values()))
     return g
 
 
@@ -892,7 +897,7 @@ def priority_func(node):
 
 def construct_priority_queue(nodes, priority_func=priority_func):
     pq = []
-    for node_name, node in nodes.iteritems():
+    for node_name, node in six.iteritems(nodes):
         entry = priority_func(node) + [node.name]
         heapq.heappush(pq, entry)
     return pq

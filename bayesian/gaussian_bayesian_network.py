@@ -1,4 +1,6 @@
 '''Classes for pure Gaussian Bayesian Networks'''
+from __future__ import absolute_import
+from __future__ import print_function
 import math
 import types
 from functools import wraps
@@ -190,11 +192,11 @@ class GaussianBayesianGraph(Graph):
         mu = result['joint']['mu']
         sigma = result['joint']['sigma']
         evidence = result['evidence']
-        print 'Evidence: %s' % str(evidence)
-        print 'Covariance Matrix:'
-        print sigma
-        print 'Means:'
-        print mu
+        print('Evidence: %s' % str(evidence))
+        print('Covariance Matrix:')
+        print(sigma)
+        print('Means:')
+        print(mu)
 
 
     def discover_sample_ordering(self):
@@ -206,7 +208,7 @@ class GaussianBayesianGraph(Graph):
         fh.write('digraph G {\n')
         fh.write('  graph [ dpi = 300 bgcolor="transparent" rankdir="LR"];\n')
         edges = set()
-        for node in sorted(self.nodes.values(), key=lambda x:x.name):
+        for node in sorted(list(self.nodes.values()), key=lambda x:x.name):
             fh.write('  %s [ shape="ellipse" color="blue"];\n' % node.name)
             for child in node.children:
                 edge = (node.name, child.name)
@@ -250,7 +252,7 @@ def build_gbn(*args, **kwds):
     # factors do not correctly represent
     # a valid network. This will be fixed
     # in next release
-    original_factors = get_original_factors(factor_nodes.values())
+    original_factors = get_original_factors(list(factor_nodes.values()))
     for var_name, factor in original_factors.items():
         factor.variable_name = var_name
     for factor_node in factor_nodes.values():

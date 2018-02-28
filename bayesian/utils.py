@@ -1,4 +1,5 @@
 '''Some Useful Helper Functions'''
+from __future__ import absolute_import
 import inspect
 
 from prettytable import PrettyTable

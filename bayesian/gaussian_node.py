@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import math
 from itertools import product
 from functools import wraps
@@ -6,6 +7,7 @@ import numpy as np
 from bayesian.factor_graph import Node
 from bayesian.gaussian import make_gaussian_cdf
 from bayesian.utils import get_args
+from six.moves import range
 
 
 

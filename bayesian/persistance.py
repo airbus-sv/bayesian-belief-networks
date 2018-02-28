@@ -1,6 +1,9 @@
 '''Handle Persistance of Pre-generated Samples'''
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sqlite3
+import six
 
 
 class UnsupportedTypeException(Exception):
@@ -23,13 +26,13 @@ COMMIT_THRESHOLD = 1000
 P2S_MAPPING = {
     bool: 'bool',
     str: 'varchar',
-    unicode: 'varchar',
+    six.text_type: 'varchar',
     int: 'integer'}
 
 
 S2P_MAPPING = {
     'bool': bool,
-    'varchar': unicode,
+    'varchar': six.text_type,
     'integer': int}
 
 
@@ -51,7 +54,7 @@ def domains_to_metadata(domains):
         try:
             metadata[k.name] = P2S_MAPPING[type(v[0])]
         except KeyError:
-            print k, v
+            print(k, v)
             raise UnsupportedTypeException
     return metadata
 
@@ -80,7 +83,7 @@ def initialize_sample_db(conn, metadata):
         CREATE TABLE samples (%s);
     ''' % ','.join(['%s %s' % (col, type_) for col, type_ in type_specs])
     cur = conn.cursor()
-    print SQL
+    print(SQL)
     cur.execute(SQL)
 
 
@@ -112,7 +115,7 @@ def build_row_factory(conn):
                 raise UnsupportedTypeException(
                     'A column in the SQLite samples '
                     'database has an unsupported type. '
-                    'Supported types are %s. ' % str(S2P_MAPPING.keys()))
+                    'Supported types are %s. ' % str(list(S2P_MAPPING.keys())))
         return row_dict
 
     return row_factory
@@ -177,10 +180,10 @@ class SampleDB(object):
             self.commit()
 
     def commit(self):
-        print 'Committing....'
+        print('Committing....')
         try:
             self.conn.commit()
             self.insert_count = 1
         except:
-            print 'Commit to db file failed...'
+            print('Commit to db file failed...')
             raise

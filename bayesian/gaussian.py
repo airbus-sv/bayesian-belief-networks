@@ -1,5 +1,6 @@
 from __future__ import division
 
+from __future__ import absolute_import
 import math
 from collections import defaultdict
 from itertools import combinations, product
@@ -7,6 +8,9 @@ from itertools import combinations, product
 from prettytable import PrettyTable
 
 from bayesian.linear_algebra import Matrix, zeros
+import six
+from six.moves import range
+from six.moves import zip
 
 
 '''
@@ -157,7 +161,7 @@ def discretize_gaussian(mu, stddev, buckets,
     # Now build the python fuction
     result.append('def %s(%s):' % (func_name, var_name))
     result.append('    probs = dict()')
-    for k, v in probs.iteritems():
+    for k, v in six.iteritems(probs):
         result.append("    probs['%s'] = %s" % (k, v))
     result.append('    return probs[%s]' % var_name)
 
@@ -171,7 +175,7 @@ def discretize_gaussian(mu, stddev, buckets,
                                 # buckets one per arg for easy zip.
 
 
-    return '\n'.join(result), probs.keys()
+    return '\n'.join(result), list(probs.keys())
 
 
 def discretize_multivariate_guassian(
@@ -346,7 +350,7 @@ class NamedMatrix(Matrix):
 
     def set_names(self, names):
         assert len(names) in self.shape
-        self.names = dict(zip(names, range(len(names))))
+        self.names = dict(list(zip(names, list(range(len(names))))))
         self.name_ordering = names
         self.index_to_name = dict([(v, k) for k, v in self.names.items()])
 

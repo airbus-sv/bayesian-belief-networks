@@ -1,6 +1,8 @@
 from __future__ import division
 '''Basic Stats functionality'''
 
+from __future__ import absolute_import
+from __future__ import print_function
 import math
 from collections import defaultdict
 
@@ -103,4 +105,4 @@ class Vector(object):
                      self.median_absolute_deviation])
         tab.add_row(['Mode Absolute Deviation',
                      self.mode_absolute_deviation])
-        print tab
+        print(tab)
